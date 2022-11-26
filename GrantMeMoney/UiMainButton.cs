@@ -11,7 +11,6 @@ namespace GrantMeMoney
     public class UiMainButton : UIButton
     {
         private const float Dim = 37f;
-        private static readonly Vector2 DefaultPos = new Vector2(605, 25);
         private UIDragHandle _drag;
 
         public override void Start()
@@ -32,8 +31,7 @@ namespace GrantMeMoney
             playAudioEvents = true;
             size = new Vector2(Dim, Dim);
 
-            // todo read from config
-            UpdatePosition(DefaultPos);
+            UpdatePosition(GrantMeMoney.Instance.ButtonPos);
 
             var dragHandler = new GameObject("GMM_UiMainButton_DragHandler");
             dragHandler.transform.parent = transform;
@@ -46,20 +44,28 @@ namespace GrantMeMoney
             var uiView = GetUIView();
             if (uiView != null)
                 m_TooltipBox = uiView.defaultTooltipBox;
-            tooltip = "Apply for a Grant of Money";
+            tooltip = "Apply for a Grant of Money\n(drag button to move)";
 
             base.Start();
         }
 
         protected override void OnPositionChanged()
         {
-            // todo write to config (maybe only if mouse up?)
             Dbg.Log($"Button position now {absolutePosition}");
 
             base.OnPositionChanged();
         }
 
-        public void UpdatePosition(Vector2 pos)
+        protected override void OnMouseUp(UIMouseEventParameter p)
+        {
+            Dbg.Log($"Mouse up; button position now {absolutePosition}; saving");
+
+            GrantMeMoney.Instance.ButtonPos = absolutePosition;
+
+            base.OnMouseUp(p);
+        }
+
+        private void UpdatePosition(Vector2 pos)
         {
             absolutePosition = pos;
             ClampToScreen();

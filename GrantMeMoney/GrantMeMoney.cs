@@ -88,12 +88,26 @@ namespace GrantMeMoney
 
         public static GrantMeMoney Instance;
 
+        private static readonly Vector2 DefaultMainButtonPos = new Vector2(605, 25);
+
         private readonly SavedInt _mGrantAmount = new SavedInt("grantAmount", ModName, 1_000_000, true);
+
+        private readonly SavedFloat _mMainButtonX = new SavedFloat("mainButtonX", ModName, DefaultMainButtonPos.x, true);
+        private readonly SavedFloat _mMainButtonY = new SavedFloat("mainButtonY", ModName, DefaultMainButtonPos.y, true);
 
         public int GrantAmount
         {
             get => _mGrantAmount.value;
             set => _mGrantAmount.value = Mathf.Clamp(value, -1_000_000_000, 1_000_000_000);
+        }
+        public Vector2 ButtonPos
+        {
+            get => new Vector2(_mMainButtonX.value, _mMainButtonY.value);
+            set
+            {
+                _mMainButtonX.value = value.x;
+                _mMainButtonY.value = value.y;
+            }
         }
 
         public void Start()
